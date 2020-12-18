@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Simple buzzer for quizzes",
   "main": "index.js",
-  "author": "Shatrughn Gupta",
+  "author": "Nick Kewney",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "2.0.3"
+    "socket.io": "^2.0.3"
   }
 }

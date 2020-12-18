@@ -126,11 +126,10 @@
   <body>
     <div id="user-input" class="grid">
       <div class="grid-cell">
-        <h2>Enter Event</h2>
+        <h2>Join Quiz</h2>
         <label>Name:</label>
         <input type="text" id="user-name" placeholder="Name" title="Name of the user.">
-        <label>Password:</label>
-        <input type="password" id="event-pass" placeholder="Password" title="Password to enter event. Keep empty for no password.">
+
         <input type="button" id="join" value="Join">
       </div>
     </div>
@@ -162,7 +161,7 @@
         socket = io.connect(location.origin + '/user', {
           query: {
             // name: name.value,
-            pass: $('#event-pass').value
+            pass: ''
           },
           transports: ['websocket'],
           upgrade: false,

@@ -1,24 +1,84 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Buzzer Board</title>
+    <title>Buzzer Display</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="icon.png">
     <style type="text/css">
+
+.fullscreen-bg {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: -100;
+}
+
+.fullscreen-bg__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .fullscreen-bg__video {
+    height: 300%;
+    top: -100%;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+  .fullscreen-bg__video {
+    width: 300%;
+    left: -100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .fullscreen-bg {
+    background: url('../img/videoframe.jpg') center center / cover no-repeat;
+  }
+
+  .fullscreen-bg__video {
+    display: none;
+  }
+}
+
+
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+
+
+
       body {
-        font-family: serif;
+        font-family: arial;
         text-align: center;
         text-transform: uppercase;
+        background: url(quiz.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        color:#fff;
       }
 
       .hide {
         display: none !important;
       }
       .active {
-        color: forestgreen;
+        color: white;
       }
       .inactive {
-        color: red;
+        color: #FFB6C1;
       }
 
       #buzzer-state {
@@ -32,18 +92,48 @@
       #buzz-list {
         margin: 0;
         padding: 0;
-        font-size: 8vw;
+        font-size: 7vw;
         list-style-position: inside;
+	list-style-type: none;
       }
+     #buzz-list > LI:first-child {font-size: 17vw;}
+     #buzz-list > LI:nth-child(n+3) {
+  	display:none;
+        visibility:hidden;
+     }
     </style>
+
+    <script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+
   </head>
   <body>
-    <div class="hide">
-      <h1>Buzz List</h1>
+
+
+
+<div class="fullscreen-bg">
+
+
+    <video loop muted autoplay poster="img/videoframe.jpg" class="fullscreen-bg__video">
+        <source src="triangles.mp4" type="video/mp4">
+    </video>
+
+
+
+</div>
+
+
+
+
+
+
+    <div class="hide center">
       <ol id="buzz-list"></ol>
     </div>
 
-    <h1 id="buzzer-state">Event Started</h1>
+    <h1 id="buzzer-state">Register Now</h1>
 
     <div class="hide">
       <h1>Countdown Clock</h1>
@@ -53,6 +143,8 @@
         <span class="seconds">00</span>
       </div>
     </div>
+
+
 
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
@@ -67,11 +159,20 @@
       const countdownContainer = clock.parentNode
       const toggleStates = {'active': 'inactive', 'inactive': 'active'}
       let timeInterval
+
+      const resetDisplay = () => {
+        document.body.style.backgroundImage = 'url(quiz.jpg)';
+      }
       
       const updateState = (state) => {
         buzzerState.textContent = 'Buzzers ' + state
         buzzerState.classList.add(state)
         buzzerState.classList.remove(toggleStates[state], 'hide')
+      }
+
+      const setBackgroundImage = (buzzer) => {
+	var buzzerImageUrl = buzzer+'.jpg';
+        document.body.style.backgroundImage = 'url('+buzzerImageUrl+')';
       }
 
       const initializeCountdown = (clockElem, endtime) => {
@@ -163,6 +264,7 @@
 
       socket.on('buzzer-deactivated', () => {
         updateState('inactive')
+	resetDisplay()
         hide(buzzListContainer)
         hide(countdownContainer)
         show(buzzerState)
@@ -170,7 +272,7 @@
 
       socket.on('event-restarted', () => {
         buzzList.innerHTML = ''
-        buzzerState.textContent = 'Event Started'
+        buzzerState.textContent = 'Register Now'
         buzzerState.classList.remove('active', 'inactive')
         hide(buzzListContainer)
         hide(countdownContainer)
@@ -180,6 +282,7 @@
       socket.on('user-buzzed', (buzzerName) => {
         const buzz = document.createElement('li')
         buzz.textContent = buzzerName
+	setBackgroundImage(buzzerName)
         buzzList.appendChild(buzz)
         hide(buzzerState)
         hide(countdownContainer)

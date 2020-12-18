@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" href="icon.png">
     <style type="text/css">
       body {
+	font-family:arial;
         width: 90%;
         max-width: 800px;
         margin: 0 auto;
@@ -97,7 +98,6 @@
   <body>
     <h1>Buzzer Host</h1>
     <div id="pass-input">
-      <input type="password" id="host-pass" placeholder="Password" title="Password to host event. Keep empty for no password.">
       <input type="button" id="enter-host" value="Enter">
     </div>
 
@@ -197,7 +197,7 @@
       $('#enter-host').addEventListener('click', () => {
         const socket = io.connect(location.origin + '/host', {
           query: {
-            pass: $('#host-pass').value
+            pass: ''
           },
           transports: ['websocket'],
           upgrade: false,
